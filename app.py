@@ -71,10 +71,9 @@ if predict:
         )
 
         # Predict
-       prediction = model.predict(padded_sequence, verbose=0)
+        prediction = model.predict(padded_sequence, verbose=0)
 
         # Get predicted class
-                # Get predicted class
         predicted_class = np.argmax(prediction)
 
         labels = [
