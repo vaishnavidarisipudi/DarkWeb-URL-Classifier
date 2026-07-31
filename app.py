@@ -1,7 +1,87 @@
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
 import streamlit as st
+import re
+import pickle
+import numpy as np
 
-st.set_page_config(page_title="Test")
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-st.title("Hello Render!")
+st.set_page_config(
+    page_title="Dark Web URL Classifier",
+    page_icon="🔐",
+    layout="centered"
+)
 
-st.success("If you can see this, Render is working correctly.")
+st.title("🔐 Dark Web URL Classifier")
+
+st.write(
+    "Enter a URL below to classify it as **Benign, Phishing, Malware, or Defacement**."
+)
+
+st.divider()
+
+st.write("### Loading AI Model...")
+
+model = load_model(
+    "models/textcnn_render.keras",
+    compile=False
+)
+
+with open("output/tokenizer.pkl", "rb") as f:
+    tokenizer = pickle.load(f)
+
+st.success("✅ Model Loaded Successfully!")
+
+st.divider()
+
+url = st.text_input(
+    "🌐 Enter URL",
+    placeholder="https://example.com"
+)
+
+predict = st.button("🔍 Predict")
+
+
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r"https?://", "", text)
+    text = re.sub(r"^www\.", "", text)
+    text = re.sub(r"<.*?>", "", text)
+    return text
+
+
+if predict:
+
+    if url == "":
+        st.warning("⚠️ Please enter a URL.")
+
+    else:
+
+        clean_url = clean_text(url)
+
+        sequence = tokenizer.texts_to_sequences([clean_url])
+
+        padded_sequence = pad_sequences(
+            sequence,
+            maxlen=100,
+            padding="post"
+        )
+
+        prediction = model.predict(
+            padded_sequence,
+            verbose=0
+        )
+
+        predicted_class = np.argmax(prediction)
+
+        labels = [
+            "Benign",
+            "Defacement",
+            "Malware",
+            "Phishing"
+        ]
+
+        st.success(f"Prediction: {labels[predicted_class]}")
