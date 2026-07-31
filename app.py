@@ -24,7 +24,10 @@ st.divider()
 
 st.write("### Loading AI Model...")
 
-model = load_model("models/textcnn_model.keras")
+model = load_model(
+    "models/textcnn_model.keras",
+    compile=False
+)
 
 with open("output/tokenizer.pkl", "rb") as f:
     tokenizer = pickle.load(f)
