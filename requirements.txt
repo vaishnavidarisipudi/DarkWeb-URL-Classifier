@@ -1,0 +1,12 @@
+tensorflow==2.18.0
+keras
+numpy
+pandas
+matplotlib
+scikit-learn
+gensim
+nltk
+beautifulsoup4
+lxml
+joblib
+tqdm
