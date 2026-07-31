@@ -25,7 +25,7 @@ st.divider()
 st.write("### Loading AI Model...")
 
 model = load_model(
-    "models/textcnn_model.keras",
+    "models/textcnn_render.keras",
     compile=False
 )
 
